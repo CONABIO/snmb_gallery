@@ -11,3 +11,59 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.main-container {
+  max-width: 80%;
+  min-height: 700px;
+  text-align: center;
+  align-items: center;
+  margin: auto;
+  margin-top: 3em;
+  position: relative;
+}
+
+.search-box-filter {
+  margin: 2em;
+  width: fit-content;
+  display: flex;
+}
+
+.filter-button {
+  margin-left: 1em !important;
+}
+
+.image-viewer-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90%;
+  height: auto;
+  z-index: 99;
+  border-radius: 6px;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #e8e8e8;
+  box-shadow: 1px 2px 9px 8px #f6f8f9;
+}
+
+.image-item {
+  cursor: pointer;
+}
+
+.image-viewer {
+  width: 85%;
+  height: auto;
+  padding: 2em;
+  margin: auto;
+}
+
+.image-viewer img {
+  width: 100%;
+}
+
+.close-button {
+  position: absolute;
+  cursor: pointer;
+  right: 17px;
+  top: 12px;
+}
