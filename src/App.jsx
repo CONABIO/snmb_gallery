@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import utils from './utils';
-import Box from '@mui/material/Box';
-import Masonry from '@mui/lab/Masonry';
 import Pagination from '@mui/material/Pagination';
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import {
   TextField,
@@ -12,18 +9,25 @@ import {
   Button
 } from '@mui/material';
 
+import InfoBar from './components/InfoBar';
+import ImageViewer from './components/ImageViewer';
+import Gallery from './components/Gallery';
+import ListItems from './components/ListItems';
+
 
 
 function App() {
 
-  const [imagesList, setList] = useState([])
-  const [categoriesList, setCatList] = useState([])
+  const [imagesList, setList] = useState([]);
+  const [totalItems,setTotalItems] = useState(0);
+  const [categoriesList, setCatList] = useState([]);
   const [page, setPage] = useState(1);
   const [maxPages, setMaxPages] = useState(0);
   const [catValue, setCatValue] = useState(null);
   const [image, setImage] = useState(null);
   const [loadedImg, changeStatusImg] = useState(false);
   const [showViewer, toggleViewer] = useState(false);
+  const [category,setCategory] = useState(null);
 
   useEffect(() => {
     getImages((page - 1) * 12);
@@ -35,7 +39,8 @@ function App() {
         countImages
       }
     `);
-    setMaxPages(parseInt(pagesNumber.data.data.countImages / 12));
+    setTotalItems(pagesNumber.data.data.countImages);
+    setMaxPages(Math.ceil(pagesNumber.data.data.countImages / 12));
   }
 
   const handlePageChange = (e, value) => {
@@ -45,7 +50,6 @@ function App() {
   }
 
   const getImages = async (pag) => {
-    console.log(pag)
     if (catValue && Object.keys(catValue).length) {
       let res = await utils.getCategoryImages(catValue.id, pag);
       let pageQuery = await utils.queryZendro(`
@@ -57,7 +61,8 @@ function App() {
         })
       }
       `);
-      setMaxPages(parseInt(pageQuery.data.data.countAnnotations / 12));
+      setTotalItems(pageQuery.data.data.countAnnotations);
+      setMaxPages(Math.ceil(pageQuery.data.data.countAnnotations / 12));
       let filteredImages = res.data.data.readOneCategory.category_annotationsFilter.map(item => { return { url: item.imageTo.url, id: item.imageTo.id } });
       setList(filteredImages)
     } else {
@@ -102,9 +107,12 @@ function App() {
   }
 
   const filterByCategory = async () => {
-    changeStatusImg(false)
-    setPage(1);
-    getImages(0);
+    if(catValue !== category) {
+      changeStatusImg(false)
+      setPage(1);
+      getImages(0);
+      setCategory(catValue);
+    }
   }
 
   const clearFilters = async () => {
@@ -148,42 +156,16 @@ function App() {
             <Button variant="text" className='filter-button' onClick={filterByCategory}>Filtrar</Button>
             <Button variant="text" className='filter-button' onClick={clearFilters}>Limpiar filtro</Button>
           </div>
-          <div>
-            <Masonry 
-              className='masonry-box'
-              columns={4}
-              spacing={2}
-              defaultHeight={650}
-              defaultColumns={4}
-              defaultSpacing={2}>
-              {imagesList.map((image, index) => (
-                <React.Fragment key={index}>
-                  {!loadedImg && <Skeleton variant="rectangular" animation="wave" className='skeleton-height' />}
-                  <img 
-                    className='image-item' 
-                    style={{
-                      display: `${loadedImg ? 'block' : 'none'}` 
-                    }}
-                    src={image.url}
-                    alt={image.id}
-                    onLoad={() => removeSkeleton(index,imagesList.length)}
-                    onClick={() => setViewer(image.url)} /> 
-                </React.Fragment>
-              ))}
-            </Masonry>
-          </div>
+          <InfoBar totalItems={totalItems}/>
+          <ListItems imagesList={imagesList} loadedImg={loadedImg} removeSkeleton={removeSkeleton} setViewer={setViewer} />
+          <Gallery imagesList={imagesList} loadedImg={loadedImg} removeSkeleton={removeSkeleton} setViewer={setViewer} />
           <Stack justifyContent="center"
             alignItems="center" spacing={2}>
             <Pagination count={maxPages} page={page} onChange={handlePageChange} showFirstButton showLastButton />
           </Stack>
         </div>
         {showViewer && 
-        <div className='image-viewer-container'>
-          <div className='close-button' onClick={() => toggleViewer(!showViewer)}>Cerrar</div>
-          <div className='image-viewer'>
-            <img src={image} />
-          </div>
-        </div>}
+        <ImageViewer showViewer={showViewer} toggleViewer={toggleViewer} image={image} />}
       </div>
     </>
   );

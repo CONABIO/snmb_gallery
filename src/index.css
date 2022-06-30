@@ -19,6 +19,7 @@ code {
   align-items: center;
   margin: auto;
   margin-top: 3em;
+  padding-bottom: 3em;
   position: relative;
 }
 
@@ -62,7 +63,7 @@ code {
 }
 
 .skeleton-height {
-  height: calc(100% / 3 - 40px) !important;
+  height: 30% !important;
 }
 
 .close-button {
@@ -74,4 +75,52 @@ code {
 
 .masonry-box {
   margin: auto !important;
+}
+
+.info {
+  border-bottom: 2px solid rgb(71, 143, 43);
+  width: 100%;
+  margin-bottom: 2em;
+  text-align: right;
+}
+
+.info-items {
+  padding-left: 0.3em;
+  font-size: 50px !important;
+  color: rgb(145 145 145 / 70%) !important;
+  font-weight: 500;
+  line-height: 1;
+}
+.info p {
+  color: rgb(170, 170, 170);
+  font-size: 25px;
+  display: inline-block;
+  margin:0;
+  padding-bottom: 10px;
+}
+
+.list-container {
+  width: 80%;
+  margin: auto;
+}
+
+.divider-margin {
+  margin-left: 130px !important;
+}
+
+.text-list-info {
+  padding-left: 35px;
+}
+
+.location-icon {
+  font-size: 18px !important;
+  padding-right: 5px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  color: gray;
+  padding-top: 1em;
 }

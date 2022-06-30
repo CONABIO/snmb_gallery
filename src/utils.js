@@ -14,6 +14,12 @@ export default {
                     }) {
                       url
                       id
+                      date_captured
+                      latitude
+                      longitude
+                      image_annotationsFilter(pagination: {limit: 0}){
+                        label
+                      }
                     }
                   }`
             }
@@ -31,6 +37,12 @@ export default {
                           imageTo {
                             url
                             id
+                            date_captured
+                            latitude
+                            longitude
+                            image_annotationsFilter(pagination: {limit: 0}){
+                                label
+                            }
                           }
                         }
                     }
