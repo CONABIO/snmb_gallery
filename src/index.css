@@ -43,7 +43,7 @@ code {
   transform: translate(-50%, -50%);
   background: white;
   border: 1px solid #e8e8e8;
-  box-shadow: 1px 2px 9px 8px #f6f8f9;
+  box-shadow: 1px 2px 9px 8px #4e4e4e29;
 }
 
 .image-item {
@@ -61,9 +61,17 @@ code {
   width: 100%;
 }
 
+.skeleton-height {
+  height: calc(100% / 3 - 40px) !important;
+}
+
 .close-button {
   position: absolute;
   cursor: pointer;
   right: 17px;
   top: 12px;
+}
+
+.masonry-box {
+  margin: auto !important;
 }
