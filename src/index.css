@@ -1,3 +1,6 @@
+@import '~leaflet/dist/leaflet.css';
+@import '~@changey/react-leaflet-markercluster/dist/styles.min.css';
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -34,7 +37,7 @@ code {
 }
 
 .image-viewer-container {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   width: 90%;
@@ -110,11 +113,20 @@ code {
 
 .text-list-info {
   padding-left: 35px;
+  cursor: pointer;
+}
+
+.text-list-info:hover {
+  text-decoration: underline;
 }
 
 .location-icon {
   font-size: 18px !important;
   padding-right: 5px;
+}
+
+.img-list {
+  cursor: pointer;
 }
 
 .location {
@@ -123,4 +135,25 @@ code {
   flex-wrap: wrap;
   color: gray;
   padding-top: 1em;
+}
+.view-btn {
+  text-align: left;
+  padding-left: 1em;
+  margin-bottom: 2em;
+}
+
+.gallery-btn {
+  border-radius: 0 !important;
+  border-left: 1px solid #c4c4c44f !important;
+}
+
+.map-btn {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0  !important;
+}
+
+.list-btn {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0  !important;
+  border-left: 1px solid #c4c4c44f !important;
 }

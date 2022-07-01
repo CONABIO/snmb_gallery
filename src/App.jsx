@@ -13,6 +13,10 @@ import InfoBar from './components/InfoBar';
 import ImageViewer from './components/ImageViewer';
 import Gallery from './components/Gallery';
 import ListItems from './components/ListItems';
+import Map from './components/Map';
+import CollectionsIcon from '@mui/icons-material/Collections';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import MapIcon from '@mui/icons-material/Map';
 
 
 
@@ -28,6 +32,7 @@ function App() {
   const [loadedImg, changeStatusImg] = useState(false);
   const [showViewer, toggleViewer] = useState(false);
   const [category,setCategory] = useState(null);
+  const [view,setView] = useState('gallery');
 
   useEffect(() => {
     getImages((page - 1) * 12);
@@ -153,16 +158,47 @@ function App() {
               sx={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Filtrar por categoría" />}
             />
-            <Button variant="text" className='filter-button' onClick={filterByCategory}>Filtrar</Button>
-            <Button variant="text" className='filter-button' onClick={clearFilters}>Limpiar filtro</Button>
+            <Button variant="text" className='filter-button' color="success" onClick={filterByCategory}>Filtrar</Button>
+            <Button variant="text" className='filter-button' color="success" onClick={clearFilters}>Limpiar filtro</Button>
           </div>
           <InfoBar totalItems={totalItems}/>
-          <ListItems imagesList={imagesList} loadedImg={loadedImg} removeSkeleton={removeSkeleton} setViewer={setViewer} />
-          <Gallery imagesList={imagesList} loadedImg={loadedImg} removeSkeleton={removeSkeleton} setViewer={setViewer} />
-          <Stack justifyContent="center"
+          <div className='view-btn'>
+            <Button 
+              className='map-btn'
+              variant="contained"
+              color="success"
+              onClick={() => setView("map")}
+              disabled={view === 'map' ? true : false}><MapIcon /> &ensp;Mapa</Button>
+            <Button 
+              className='gallery-btn'
+              variant="contained"
+              color="success"
+              onClick={() => setView("gallery")}
+              disabled={view === 'gallery' ? true : false}><CollectionsIcon /> &ensp;Galería</Button>
+            <Button 
+              className='list-btn'
+              variant="contained"
+              color="success"
+              onClick={() => setView("list")}
+              disabled={view === 'list' ? true : false}><ViewListIcon /> &ensp;Lista</Button>
+          </div>
+          {view === 'map' && <Map setViewer={setViewer} />}
+          {view === 'list' && 
+            <ListItems
+            imagesList={imagesList}
+            loadedImg={loadedImg}
+            removeSkeleton={removeSkeleton}
+            setViewer={setViewer} /> }
+          {view === 'gallery' && 
+            <Gallery 
+              imagesList={imagesList}
+              loadedImg={loadedImg}
+              removeSkeleton={removeSkeleton}
+              setViewer={setViewer} /> }
+          {view !== 'map' && <Stack justifyContent="center"
             alignItems="center" spacing={2}>
             <Pagination count={maxPages} page={page} onChange={handlePageChange} showFirstButton showLastButton />
-          </Stack>
+          </Stack>}
         </div>
         {showViewer && 
         <ImageViewer showViewer={showViewer} toggleViewer={toggleViewer} image={image} />}

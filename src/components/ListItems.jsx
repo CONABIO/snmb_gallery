@@ -7,7 +7,6 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 
 import IconButton from '@mui/material/IconButton';
-import Icon from '@mui/material/Icon';
 import Typography from '@mui/material/Typography';
 import ImageSearchIcon from '@mui/icons-material/ImageSearch';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -18,7 +17,7 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
         <div className='list-container'>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {imagesList.map((image, index) => (
-                    <>
+                    <React.Fragment key={index}>
                         <ListItem 
                             alignItems="flex-start"
                             secondaryAction={
@@ -28,10 +27,17 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                             }
                             >
                             <ListItemAvatar>
-                                <Avatar sx={{ width: 86, height: 86 }} alt={image.id} src={image.url} variant="rounded" />
+                                <Avatar 
+                                    className='img-list'
+                                    sx={{ width: 86, height: 86 }}
+                                    alt={image.id}
+                                    src={image.url}
+                                    variant="rounded"
+                                    onClick={() => setViewer(image.url)} />
                             </ListItemAvatar>
                             <ListItemText
                                 className='text-list-info'
+                                onClick={() => setViewer(image.url)}
                                 primary={
                                     <React.Fragment>
                                         <Typography
@@ -69,7 +75,7 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                             />
                         </ListItem>
                         <Divider className="divider-margin" variant="inset" component="li" />
-                    </>
+                    </React.Fragment>
                 ))}
             </List >
         </div>
