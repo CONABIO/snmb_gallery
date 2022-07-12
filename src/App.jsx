@@ -23,7 +23,7 @@ import MapIcon from '@mui/icons-material/Map';
 function App() {
 
   const [imagesList, setList] = useState([]);
-  const [totalItems,setTotalItems] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
   const [categoriesList, setCatList] = useState([]);
   const [page, setPage] = useState(1);
   const [maxPages, setMaxPages] = useState(0);
@@ -31,12 +31,13 @@ function App() {
   const [image, setImage] = useState(null);
   const [loadedImg, changeStatusImg] = useState(false);
   const [showViewer, toggleViewer] = useState(false);
-  const [category,setCategory] = useState(null);
-  const [view,setView] = useState('gallery');
+  const [category, setCategory] = useState(null);
+  const [view, setView] = useState('gallery');
 
   useEffect(() => {
     getImages((page - 1) * 12);
-  }, [page])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page,view])
 
   const getPagesNumber = async () => {
     let pagesNumber = await utils.queryZendro(`
@@ -49,14 +50,17 @@ function App() {
   }
 
   const handlePageChange = (e, value) => {
-      changeStatusImg(false)
-      getImages((page - 1) * 12);
-      setPage(value);
+    changeStatusImg(false)
+    getImages((page - 1) * 12);
+    setPage(value);
   }
 
   const getImages = async (pag) => {
     if (catValue && Object.keys(catValue).length) {
-      let res = await utils.getCategoryImages(catValue.id, pag);
+      let res = await utils.getCategoryImages(
+          catValue.id,
+          pag,
+          view.includes("map") ? "1000" : false);
       let pageQuery = await utils.queryZendro(`
       query {
         countAnnotations(search:{
@@ -68,10 +72,21 @@ function App() {
       `);
       setTotalItems(pageQuery.data.data.countAnnotations);
       setMaxPages(Math.ceil(pageQuery.data.data.countAnnotations / 12));
-      let filteredImages = res.data.data.readOneCategory.category_annotationsFilter.map(item => { return { url: item.imageTo.url, id: item.imageTo.id } });
+      let filteredImages = res.data.data.readOneCategory.category_annotationsFilter.map(item => {
+        return {
+          url: item.imageTo.url,
+          id: item.imageTo.id,
+          date_captured: item.imageTo.date_captured,
+          latitude: item.imageTo.latitude,
+          longitude: item.imageTo.longitude,
+          image_annotationsFilter: item.imageTo.image_annotationsFilter
+        }
+      });
       setList(filteredImages)
     } else {
-      let images = await utils.getImages(pag);
+      let images = await utils.getImages(
+        pag,
+        view.includes("map") ? "1000" : false);
       setList(images.data.data.images);
       getPagesNumber();
       getCategories();
@@ -98,7 +113,7 @@ function App() {
     `);
       let catList = res.data.data.categories.filter(item => item.category_annotationsFilter.length > 0)
       catList = catList.map(item => { return { label: item.name, id: item.id } });
-      catList = catList.sort((a,b) => {
+      catList = catList.sort((a, b) => {
         if (a.label > b.label) {
           return 1;
         }
@@ -106,13 +121,13 @@ function App() {
           return -1;
         }
         return 0;
-      } )
+      })
       setCatList(catList);
     }
   }
 
   const filterByCategory = async () => {
-    if(catValue !== category) {
+    if (catValue !== category) {
       changeStatusImg(false)
       setPage(1);
       getImages(0);
@@ -123,20 +138,25 @@ function App() {
   const clearFilters = async () => {
     setPage(1);
     setCatValue(null);
-    let images = await utils.getImages(0);
+    let images = await utils.getImages(0,view.includes("map") ? "1000" : false);
     setList(images.data.data.images);
     getPagesNumber();
     getCategories();
   }
 
-  const setViewer = (url) => {
-    setImage(url);
+  const setViewer = (image) => {
+    setImage(image);
     toggleViewer(!showViewer)
   }
 
-  const removeSkeleton = (idx,listLength) => {
-    if(idx === listLength - 1)
+  const removeSkeleton = (idx, listLength) => {
+    if (idx === listLength - 1)
       changeStatusImg(true)
+  }
+
+  const changeView = (view) => {
+    setList([])
+    setView(view)
   }
 
   return (
@@ -161,47 +181,47 @@ function App() {
             <Button variant="text" className='filter-button' color="success" onClick={filterByCategory}>Filtrar</Button>
             <Button variant="text" className='filter-button' color="success" onClick={clearFilters}>Limpiar filtro</Button>
           </div>
-          <InfoBar totalItems={totalItems}/>
+          <InfoBar totalItems={totalItems} />
           <div className='view-btn'>
-            <Button 
+            <Button
               className='map-btn'
               variant="contained"
               color="success"
-              onClick={() => setView("map")}
+              onClick={() => changeView("map")}
               disabled={view === 'map' ? true : false}><MapIcon /> &ensp;Mapa</Button>
-            <Button 
+            <Button
               className='gallery-btn'
               variant="contained"
               color="success"
-              onClick={() => setView("gallery")}
+              onClick={() => changeView("gallery")}
               disabled={view === 'gallery' ? true : false}><CollectionsIcon /> &ensp;Galería</Button>
-            <Button 
+            <Button
               className='list-btn'
               variant="contained"
               color="success"
-              onClick={() => setView("list")}
+              onClick={() => changeView("list")}
               disabled={view === 'list' ? true : false}><ViewListIcon /> &ensp;Lista</Button>
           </div>
-          {view === 'map' && <Map setViewer={setViewer} />}
-          {view === 'list' && 
+          {view === 'map' && <Map imagesList={imagesList} setViewer={setViewer} />}
+          {view === 'list' &&
             <ListItems
-            imagesList={imagesList}
-            loadedImg={loadedImg}
-            removeSkeleton={removeSkeleton}
-            setViewer={setViewer} /> }
-          {view === 'gallery' && 
-            <Gallery 
               imagesList={imagesList}
               loadedImg={loadedImg}
               removeSkeleton={removeSkeleton}
-              setViewer={setViewer} /> }
+              setViewer={setViewer} />}
+          {view === 'gallery' &&
+            <Gallery
+              imagesList={imagesList}
+              loadedImg={loadedImg}
+              removeSkeleton={removeSkeleton}
+              setViewer={setViewer} />}
           {view !== 'map' && <Stack justifyContent="center"
             alignItems="center" spacing={2}>
             <Pagination count={maxPages} page={page} onChange={handlePageChange} showFirstButton showLastButton />
           </Stack>}
         </div>
-        {showViewer && 
-        <ImageViewer showViewer={showViewer} toggleViewer={toggleViewer} image={image} />}
+        {showViewer &&
+          <ImageViewer showViewer={showViewer} toggleViewer={toggleViewer} image={image} />}
       </div>
     </>
   );

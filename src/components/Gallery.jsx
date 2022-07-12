@@ -23,7 +23,7 @@ const Gallery = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                             src={image.url}
                             alt={image.id}
                             onLoad={() => removeSkeleton(index, imagesList.length)}
-                            onClick={() => setViewer(image.url)} />
+                            onClick={() => setViewer(image)} />
                     </React.Fragment>
                 ))}
             </Masonry>

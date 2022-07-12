@@ -21,7 +21,7 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                         <ListItem 
                             alignItems="flex-start"
                             secondaryAction={
-                                <IconButton edge="end" aria-label="comments" onClick={() => setViewer(image.url)} >
+                                <IconButton edge="end" aria-label="comments" onClick={() => setViewer(image)} >
                                   <ImageSearchIcon />
                                 </IconButton>
                             }
@@ -33,11 +33,11 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                                     alt={image.id}
                                     src={image.url}
                                     variant="rounded"
-                                    onClick={() => setViewer(image.url)} />
+                                    onClick={() => setViewer(image)} />
                             </ListItemAvatar>
                             <ListItemText
                                 className='text-list-info'
-                                onClick={() => setViewer(image.url)}
+                                onClick={() => setViewer(image)}
                                 primary={
                                     <React.Fragment>
                                         <Typography

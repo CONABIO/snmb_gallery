@@ -1,15 +1,17 @@
 import axios from "axios";
 
 const graphqlUrl = process.env.NODE_ENV === 'development' ? "http://localhost:3000/graphql" : "https://snmb.conabio.gob.mx/graphqlzendro/graphql";
-export default {
-    getImages(pag) {
+
+
+const utils = {
+    getImages(pag,limit) {
         return axios({
             method: "post",
             url: graphqlUrl,
             data: {
                 "query": `query {
                     images(pagination: { 
-                        limit:12,
+                        limit:${limit ? limit : "12"},
                         offset: ${pag}
                     }) {
                       url
@@ -17,8 +19,11 @@ export default {
                       date_captured
                       latitude
                       longitude
+                      monitoring_type
+                      anp
                       image_annotationsFilter(pagination: {limit: 0}){
                         label
+                        bbox
                       }
                     }
                   }`
@@ -26,22 +31,25 @@ export default {
         })
     },
 
-    getCategoryImages(catId,pag) {
+    getCategoryImages(catId,pag,limit) {
         return axios({
             method: "post",
             url: graphqlUrl,
             data: {
                 "query": `query {
                     readOneCategory(id:${catId}){
-                        category_annotationsFilter(pagination: {limit:12, offset: ${pag}}) {
+                        category_annotationsFilter(pagination: {limit:${limit ? limit : "12"}, offset: ${pag}}) {
                           imageTo {
                             url
                             id
                             date_captured
                             latitude
                             longitude
+                            monitoring_type
+                            anp
                             image_annotationsFilter(pagination: {limit: 0}){
                                 label
+                                bbox
                             }
                           }
                         }
@@ -61,3 +69,5 @@ export default {
         })
     }
 }
+
+export default utils;
