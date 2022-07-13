@@ -13,6 +13,10 @@ const utils = {
                     images(pagination: { 
                         limit:${limit ? limit : "12"},
                         offset: ${pag}
+                    }, search: {
+                        value: "false",
+                        field: has_human,
+                        operator: eq
                     }) {
                       url
                       id
@@ -37,9 +41,15 @@ const utils = {
             url: graphqlUrl,
             data: {
                 "query": `query {
-                    readOneCategory(id:${catId}){
-                        category_annotationsFilter(pagination: {limit:${limit ? limit : "12"}, offset: ${pag}}) {
-                          imageTo {
+                    imageAnnotations(
+                        pagination: {
+                            limit: ${limit ? limit : "12"}, offset: ${pag}
+                        }, search: {
+                            value: "${catId}",
+                            field: label,
+                            operator: eq
+                        }) {
+                        imageTo {
                             url
                             id
                             date_captured
@@ -51,7 +61,6 @@ const utils = {
                                 label
                                 bbox
                             }
-                          }
                         }
                     }
                   }`

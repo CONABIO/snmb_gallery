@@ -42,7 +42,11 @@ function App() {
   const getPagesNumber = async () => {
     let pagesNumber = await utils.queryZendro(`
       query {
-        countImages
+        countImages(search: {
+          value: "false",
+          field: has_human,
+          operator: eq
+      })
       }
     `);
     setTotalItems(pagesNumber.data.data.countImages);
@@ -58,21 +62,21 @@ function App() {
   const getImages = async (pag) => {
     if (catValue && Object.keys(catValue).length) {
       let res = await utils.getCategoryImages(
-          catValue.id,
+          catValue.label,
           pag,
           view.includes("map") ? "1000" : false);
       let pageQuery = await utils.queryZendro(`
       query {
-        countAnnotations(search:{
+        countImageAnnotations(search:{
           field: category_id
           value: "${catValue.id}",
           operator: eq
         })
       }
       `);
-      setTotalItems(pageQuery.data.data.countAnnotations);
-      setMaxPages(Math.ceil(pageQuery.data.data.countAnnotations / 12));
-      let filteredImages = res.data.data.readOneCategory.category_annotationsFilter.map(item => {
+      setTotalItems(pageQuery.data.data.countImageAnnotations);
+      setMaxPages(Math.ceil(pageQuery.data.data.countImageAnnotations / 12));
+      let filteredImages = res.data.data.imageAnnotations.map(item => {
         return {
           url: item.imageTo.url,
           id: item.imageTo.id,
@@ -98,11 +102,11 @@ function App() {
     if (categoriesList.length === 0) {
       let res = await utils.queryZendro(`
       query {
-        categories(pagination: {limit:0}, search: {
-          value: "empty",
-          field: name,
-          operator: ne
-        }) {
+        categories(pagination: {limit:0}, 
+          search: {operator: and, search: [
+            {value: "empty", field: name, operator: ne}
+            {value: "Homo sapiens", field: name, operator: ne}
+          ]}) {
           id
           name
           category_annotationsFilter(pagination: {limit: 1}) {
