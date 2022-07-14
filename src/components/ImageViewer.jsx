@@ -19,26 +19,30 @@ const ImageViewer = ({ showViewer, toggleViewer, image }) => {
     const getImageDimensions = () => {
       if(refImg && typeof refImg !== 'undefined') {
 
-        refCanvas.current.height = refImg.current.offsetHeight;
-        refCanvas.current.width = refImg.current.offsetWidth;
-
-        image.image_annotationsFilter.forEach((a,idx) => {
-          let ctx = refCanvas.current.getContext("2d");
-          ctx.strokeStyle = "#ffff00";
-          ctx.lineWidth = 3;
-          ctx.fillStyle = "#ffff00";
-          ctx.font = "27px Arial";
-          ctx.fillText(
-            idx + 1,
-            a.bbox[0] * refImg.current.offsetWidth / refImg.current.naturalWidth,
-            (a.bbox[1] * refImg.current.offsetHeight / refImg.current.naturalHeight) - 10);
-          ctx.rect(
-            a.bbox[0] * refImg.current.offsetWidth / refImg.current.naturalWidth,
-            a.bbox[1] * refImg.current.offsetHeight / refImg.current.naturalHeight,
-            a.bbox[2] * refImg.current.offsetWidth / refImg.current.naturalWidth,
-            a.bbox[3] * refImg.current.offsetHeight / refImg.current.naturalHeight);
-          ctx.stroke();
-        })
+        
+        refImg.current.onload = () => {
+          refCanvas.current.height = refImg.current.offsetHeight;
+          refCanvas.current.width = refImg.current.offsetWidth;
+          
+          image.image_annotationsFilter.forEach((a,idx) => {
+            let ctx = refCanvas.current.getContext("2d");
+            ctx.strokeStyle = "#ffff00";
+            ctx.lineWidth = 3;
+            ctx.fillStyle = "#ffff00";
+            ctx.font = "27px Arial";
+            ctx.fillText(
+              idx + 1,
+              a.bbox[0] * refImg.current.offsetWidth / refImg.current.naturalWidth,
+              (a.bbox[1] * refImg.current.offsetHeight / refImg.current.naturalHeight) - 10);
+            ctx.rect(
+              a.bbox[0] * refImg.current.offsetWidth / refImg.current.naturalWidth,
+              a.bbox[1] * refImg.current.offsetHeight / refImg.current.naturalHeight,
+              a.bbox[2] * refImg.current.offsetWidth / refImg.current.naturalWidth,
+              a.bbox[3] * refImg.current.offsetHeight / refImg.current.naturalHeight);
+            ctx.stroke();
+          })
+          
+        }
       }
     }
     getImageDimensions();

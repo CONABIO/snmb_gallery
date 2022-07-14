@@ -34,7 +34,7 @@ const Markers = ({ images, setViewer }) => {
                                     className='img-list'
                                     sx={{ width: 86, height: 86 }}
                                     alt={img.id}
-                                    src={img.url}
+                                    src={img.url.replace(".JPG","") + "_thumbs.JPG"}
                                     variant="rounded"
                                     onClick={() => setViewer(img)} />
                             </ListItemAvatar>

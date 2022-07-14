@@ -20,7 +20,7 @@ const Gallery = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                             style={{
                                 display: `${loadedImg ? 'block' : 'none'}`
                             }}
-                            src={image.url}
+                            src={image.url.replace(".JPG","") + "_thumbs.JPG"}
                             alt={image.id}
                             onLoad={() => removeSkeleton(index, imagesList.length)}
                             onClick={() => setViewer(image)} />

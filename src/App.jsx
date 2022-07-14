@@ -54,9 +54,11 @@ function App() {
   }
 
   const handlePageChange = (e, value) => {
-    changeStatusImg(false)
-    getImages((page - 1) * 12);
-    setPage(value);
+    if(value !== page) {
+      changeStatusImg(false)
+      getImages((page - 1) * 12);
+      setPage(value);
+    }
   }
 
   const getImages = async (pag) => {

@@ -31,7 +31,7 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                                     className='img-list'
                                     sx={{ width: 86, height: 86 }}
                                     alt={image.id}
-                                    src={image.url}
+                                    src={image.url.replace(".JPG","") + "_thumbs.JPG"}
                                     variant="rounded"
                                     onClick={() => setViewer(image)} />
                             </ListItemAvatar>
