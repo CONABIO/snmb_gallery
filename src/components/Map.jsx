@@ -46,7 +46,7 @@ const Markers = ({ images, setViewer }) => {
                                         <Typography
                                             fontSize={20}
                                         >
-                                            {img.image_annotationsFilter[0].label}
+                                            {img.label}
                                         </Typography>
                                         <Typography
                                             fontSize={17}

@@ -43,7 +43,7 @@ const ListItems = ({ imagesList, loadedImg, removeSkeleton, setViewer }) => {
                                         <Typography
                                             fontSize={20}
                                         >
-                                            {image.image_annotationsFilter[0].label}
+                                            {image.label}
                                         </Typography>
                                     </React.Fragment>
                                 }

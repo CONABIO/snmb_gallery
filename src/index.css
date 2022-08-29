@@ -225,3 +225,12 @@ code {
   position: absolute;
   left: 2em;
 }
+
+.anp-combo {
+  margin-left: 1em;
+}
+
+.download-btn {
+  text-align: right;
+  margin-top: 1em;
+}

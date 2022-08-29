@@ -4,67 +4,25 @@ const graphqlUrl = process.env.NODE_ENV === 'development' ? "http://localhost:30
 
 
 const utils = {
-    getImages(pag,limit) {
+
+    getImages(pag,limit,params) {
         return axios({
-            method: "post",
-            url: graphqlUrl,
-            data: {
-                "query": `query {
-                    images(pagination: { 
-                        limit:${limit ? limit : "12"},
-                        offset: ${pag}
-                    }, search: {
-                        value: "false",
-                        field: has_human,
-                        operator: eq
-                    }) {
-                      url
-                      id
-                      date_captured
-                      latitude
-                      longitude
-                      monitoring_type
-                      anp
-                      image_annotationsFilter(pagination: {limit: 0}){
-                        label
-                        bbox
-                      }
-                    }
-                  }`
-            }
+            method: "get",
+            url: `https://snmb.conabio.gob.mx/solr/zendro/select?indent=true&q.op=OR&q=*%3A*&rows=${limit}&start=${pag}${params.toString().replaceAll(',','')}`,
         })
     },
 
-    getCategoryImages(catId,pag,limit) {
+    getCategories() {
         return axios({
-            method: "post",
-            url: graphqlUrl,
-            data: {
-                "query": `query {
-                    imageAnnotations(
-                        pagination: {
-                            limit: ${limit ? limit : "12"}, offset: ${pag}
-                        }, search: {
-                            value: "${catId}",
-                            field: label,
-                            operator: eq
-                        }) {
-                        imageTo {
-                            url
-                            id
-                            date_captured
-                            latitude
-                            longitude
-                            monitoring_type
-                            anp
-                            image_annotationsFilter(pagination: {limit: 0}){
-                                label
-                                bbox
-                            }
-                        }
-                    }
-                  }`
-            }
+            method: "get",
+            url: `https://snmb.conabio.gob.mx/solr/zendro/select?facet=on&facet.field=label&indent=true&q=*%3A*&rows=0`
+        })
+    },
+
+    getANPs() {
+        return axios({
+            method: "get",
+            url: `https://snmb.conabio.gob.mx/solr/zendro/select?facet=on&facet.field=anp&indent=true&q=*%3A*&rows=0`
         })
     },
 
