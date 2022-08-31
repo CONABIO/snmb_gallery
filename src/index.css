@@ -30,6 +30,7 @@ code {
   margin: 2em;
   width: fit-content;
   display: flex;
+  margin-bottom: 1em;
 }
 
 .filter-button {
@@ -233,4 +234,9 @@ code {
 .download-btn {
   text-align: right;
   margin-top: 1em;
+}
+
+.clear-filters-container {
+  text-align: left;
+  padding-left: 1em;
 }

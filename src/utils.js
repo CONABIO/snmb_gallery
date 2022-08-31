@@ -26,6 +26,13 @@ const utils = {
         })
     },
 
+    getYears() {
+        return axios({
+            method: "get",
+            url: `https://snmb.conabio.gob.mx/solr/zendro/select?facet=on&facet.field=date_captured&indent=true&q=*%3A*&rows=0`
+        })
+    },
+
     queryZendro(query) {
         return axios({
             method: "post",

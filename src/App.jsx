@@ -65,10 +65,17 @@ function App() {
   // show download button
   const [showDownload,setDownloadBtn] = useState(false);
 
+  // year list
+  const [years,setYearList] = useState([]);
+
+  // set current year
+  const [selectedYear,setSelectedYear] = useState('');
+
   useEffect(() => {
     getImages((page - 1) * 12);
     getCategories();
     getANP();
+    getYear();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page,view])
 
@@ -90,6 +97,10 @@ function App() {
 
     if(anp) {
       filters.push(`&fq=anp:"${anp}"`);
+    }
+
+    if(selectedYear) {
+      filters.push(`&fq=date_captured:${selectedYear}*`);
     }
 
     let images = await utils.getImages(
@@ -138,6 +149,25 @@ function App() {
     }
   }
 
+  
+  const getYear = async () => {
+    if (anpList.length === 0) {
+      let res = await utils.getYears();
+      let dates = res.data.facet_counts.facet_fields.date_captured.filter(l => !Number.isInteger(l));
+      let years = [...new Set(dates.map(y => y.split("-")[0]))];
+      years = years.sort((a, b) => {
+        if (a > b) {
+          return 1;
+        }
+        if (a < b) {
+          return -1;
+        }
+        return 0;
+      })
+      setYearList(years);
+    }
+  }
+
   const filterByCategory = async () => {
     if (catValue !== category) {
       changeStatusImg(false)
@@ -154,6 +184,7 @@ function App() {
     setPage(1);
     setCatValue(null);
     setAnp('');
+    setSelectedYear('');
     setDownloadBtn(false);
     let images = await utils.getImages(0,view.includes("map") ? "1000" : 12,["&fq=has_human:false"]);
     setList(images.data.response.docs);
@@ -161,6 +192,7 @@ function App() {
     setMaxPages(Math.ceil(images.data.response.numFound / 12));
     getCategories();
     getANP();
+    getYear();
   }
 
   const setViewer = (image) => {
@@ -201,6 +233,10 @@ function App() {
       params.push(`&fq=anp:"${anp}"`);
     }
 
+    if(selectedYear) {
+      params.push(`&fq=date_captured:${selectedYear}*`);
+    }
+
     let data = await utils.getImages(0,totalItems,params)
     var mimetype = 'text/csv';
     var filename = 'snmb_datos_busqueda.csv';
@@ -239,7 +275,7 @@ function App() {
               id="combo-box-categories"
               options={categoriesList}
               sx={{ width: 250 }}
-              renderInput={(params) => <TextField {...params} label="Filtrar por categoría" />}
+              renderInput={(params) => <TextField {...params} label="Filtrar por especie" />}
             />
             <Autocomplete
               disablePortal
@@ -255,7 +291,23 @@ function App() {
               sx={{ width: 250 }}
               renderInput={(params) => <TextField {...params} label="Filtrar por ANP" />}
             />
+            <Autocomplete
+              disablePortal
+              value={selectedYear}
+              onChange={(event, value) => {
+                if (value) {
+                  setSelectedYear(value)
+                }
+              }}
+              id="combo-box-year"
+              className='anp-combo'
+              options={years}
+              sx={{ width: 250 }}
+              renderInput={(params) => <TextField {...params} label="Filtrar por año" />}
+            />
             <Button variant="text" className='filter-button' color="success" onClick={filterByCategory}>Filtrar</Button>
+          </div>
+          <div className='clear-filters-container'>
             <Button variant="text" className='filter-button' color="success" onClick={clearFilters}>Limpiar filtros</Button>
           </div>
           <InfoBar totalItems={totalItems} />
