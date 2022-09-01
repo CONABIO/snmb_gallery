@@ -223,7 +223,7 @@ function App() {
 
   const downloadData = async () => {
 
-    let params = ["&wt=csv","&fq=has_human:false"];
+    let params = ["&wt=json","&fq=has_human:false","&fl=label%2Clatitude%2Clongitude%2Canp%2Ccity%2Cstate%2Cdate_captured"];
     
     if (catValue && Object.keys(catValue).length) {
       params.push(`&fq=label:"${catValue}"`);
@@ -238,16 +238,34 @@ function App() {
     }
 
     let data = await utils.getImages(0,totalItems,params)
+
+    const items = data.data.response.docs.map(l => { 
+      return {
+        "Especie": l.label,
+        "Latitud": l.latitude,
+        "Longitud": l.longitude,
+        "ANP": l.anp, 
+        "Municipio": l.city, 
+        "Estado": l.state, 
+        "Mes": l.date_captured.split("-")[1], 
+        "Año": l.date_captured.split("-")[0] } } )
+
+    const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+    const header = Object.keys(items[0])
+    const csv = [
+      header.join(','), // header row first
+      ...items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+    ].join('\r\n')
+
     var mimetype = 'text/csv';
     var filename = 'snmb_datos_busqueda.csv';
 
     // Create Dummy A Element
     var a = window.document.createElement('a');
-
      // createObjectURL for local data as a Blob type
-    a.href = window.URL.createObjectURL(new Blob([data.data], {
-      encoding: "UTF-8",
-      type: mimetype + ";charset=UTF-8",
+    a.href = window.URL.createObjectURL(new Blob(["\uFEFF"+csv], {
+      encoding: "utf-8",
+      type: mimetype + ";charset=utf-8",
     }));
     a.download = filename;
 

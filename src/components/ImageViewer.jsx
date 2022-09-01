@@ -60,6 +60,8 @@ const ImageViewer = ({ showViewer, toggleViewer, image }) => {
           <div className='general-details'>
             <DetailItem title="Tipo de monitoreo" value={image.monitoring_type} />
             <DetailItem title="Fecha de captura" value={image.date_captured} />
+            <DetailItem title="Estado" value={image.state} />
+            <DetailItem title="Municipio" value={image.city} />
             <DetailItem title="ANP" value={image.anp ? image.anp : "No defininda"} />
             <DetailItem title="Coordenadas" value={image.latitude ? image.latitude.toFixed(6) + ", " + image.longitude.toFixed(6) : "No definindas"} />
           </div>
